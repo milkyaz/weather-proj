@@ -10,11 +10,18 @@
 
 <style scoped>
 .cs-button {
+  width: 100%;
   border-radius: 10px;
+  padding: 14px;
+  font-size: 20px;
+  font-weight: 600;
+  height: 53px;
   border: none;
   cursor: pointer;
   display: flex;
+  gap: 9px;
   align-items: center;
+  justify-content: center;
   color: white;
   background: linear-gradient(
       90deg,

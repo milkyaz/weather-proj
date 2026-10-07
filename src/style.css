@@ -4,6 +4,10 @@
   --mono: ui-monospace, Consolas, monospace;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   display: grid;
   place-items: center;

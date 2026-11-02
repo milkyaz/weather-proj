@@ -1,20 +1,28 @@
 <script setup>
 import BaseButton from "./BaseButton.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import BaseInput from "./BaseInput.vue";
 
 const emit = defineEmits(['selectedCity']);
 let isEdited = ref(false);
+let city = ref('Moscow');
 
 function select() {
   isEdited.value = false;
-  emit('selectedCity', 'London');
+  emit('selectedCity', city.value);
 }
 
 function edit() {
   isEdited.value = true;
 }
 
+function updateCity(newCity) {
+  city.value = newCity;
+}
+
+onMounted(() => {
+  emit('selectedCity', city.value);
+})
 </script>
 
 <template>
@@ -26,7 +34,7 @@ function edit() {
       </BaseButton>
     </div>
     <div v-if="isEdited" class="city-select__form">
-      <BaseInput placeholder="Введите город" />
+      <BaseInput placeholder="Введите город" :value="city" @update:value="updateCity" @keyup.enter="select" />
       <BaseButton @click="select">Сохранить</BaseButton>
     </div>
   </div>

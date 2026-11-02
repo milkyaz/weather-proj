@@ -3,26 +3,26 @@ import State from "./components/State.vue";
 import CitySelect from "./components/CitySelect.vue";
 import {computed, ref} from "vue";
 
+const API_ENDPOINT = 'https://api.weatherapi.com/v1';
 const savedCity = ref('Moscow');
-const data = ref({
-  humidity: 20,
-  rain: 0,
-  wind: 10,
-});
+const data = ref();
 
 const dataModified = computed(() => {
+  if (!data.value) {
+    return [];
+  }
   return [
     {
       label: 'Влажность',
-      stat: data.value.humidity + '%'
+      stat: data.value.current.humidity + '%'
     },
     {
       label: 'Осадки',
-      stat: data.value.rain + '%'
+      stat: data.value.current.chance_of_rain + '%'
     },
     {
       label: 'Ветер',
-      stat: data.value.wind + 'м/ч'
+      stat: data.value.current.wind_kph + 'м/ч'
     },
 
   ]
@@ -30,7 +30,14 @@ const dataModified = computed(() => {
 
 async function getCity(city) {
   savedCity.value = city;
-  data.value.humidity = 20;
+  const params = new URLSearchParams({
+    q: city,
+    lang: 'ru',
+    key: '3416e0548f3f4e1185f63806262710',
+    days: 3
+  })
+  const res = await fetch(`${API_ENDPOINT}/forecast.json?${params.toString()}`);
+  data.value = await res.json();
 }
 </script>
 

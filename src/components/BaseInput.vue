@@ -1,9 +1,10 @@
 <script setup>
-
+const props = defineProps(['value']);
+const emit = defineEmits(['update:value']);
 </script>
 
 <template>
-  <input class="cs-input"/>
+  <input class="cs-input" :value="props.value" @input="emit('update:value', $event.target.value)"/>
 </template>
 
 <style scoped>

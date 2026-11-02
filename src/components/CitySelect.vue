@@ -5,7 +5,7 @@ import BaseInput from "./BaseInput.vue";
 
 const emit = defineEmits(['selectedCity']);
 let isEdited = ref(false);
-let city = ref('Moscow');
+let city = ref('Moscowdw');
 
 function select() {
   isEdited.value = false;

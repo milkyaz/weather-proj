@@ -2,10 +2,17 @@
 import State from "./components/State.vue";
 import CitySelect from "./components/CitySelect.vue";
 import {computed, ref} from "vue";
+import Error from "./components/Error.vue";
 
 const API_ENDPOINT = 'https://api.weatherapi.com/v1';
+const errorMap = new Map([[1006,'Указанный город не найден']])
 const savedCity = ref('Moscow');
 const data = ref();
+const error = ref()
+
+const errorDisplay = computed(() => {
+  return errorMap.get(error.value?.error?.code)
+})
 
 const dataModified = computed(() => {
   if (!data.value) {
@@ -37,14 +44,20 @@ async function getCity(city) {
     days: 3
   })
   const res = await fetch(`${API_ENDPOINT}/forecast.json?${params.toString()}`);
+  if(res.status !== 200) {
+    error.value = await res.json();
+    data.value = null;
+    return;
+  }
+  error.value = null;
   data.value = await res.json();
 }
 </script>
 
 <template>
   <main class="main">
-    <div id="city">{{ savedCity }}</div>
-    <State v-for="item in dataModified" v-bind="item" :key="item.label" />
+    <Error :error="errorDisplay"/>
+    <State v-for="item in dataModified" v-bind="item" :key="item.label"/>
     <CitySelect @selected-city="getCity"/>
   </main>
 

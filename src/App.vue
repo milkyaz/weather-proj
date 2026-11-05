@@ -3,9 +3,12 @@ import State from "./components/State.vue";
 import CitySelect from "./components/CitySelect.vue";
 import {computed, ref} from "vue";
 import Error from "./components/Error.vue";
+import IconSun from "./icons/weather/IconSun.vue";
+import IconRain from "./icons/weather/IconRain.vue";
+import IconCloud from "./icons/weather/IconCloud.vue";
 
 const API_ENDPOINT = 'https://api.weatherapi.com/v1';
-const errorMap = new Map([[1006,'Указанный город не найден']])
+const errorMap = new Map([[1006, 'Указанный город не найден']])
 const savedCity = ref('Moscow');
 const data = ref();
 const error = ref()
@@ -44,7 +47,7 @@ async function getCity(city) {
     days: 3
   })
   const res = await fetch(`${API_ENDPOINT}/forecast.json?${params.toString()}`);
-  if(res.status !== 200) {
+  if (res.status !== 200) {
     error.value = await res.json();
     data.value = null;
     return;

@@ -3,15 +3,14 @@ import State from "./components/State.vue";
 import CitySelect from "./components/CitySelect.vue";
 import {computed, ref} from "vue";
 import Error from "./components/Error.vue";
-import IconSun from "./icons/weather/IconSun.vue";
-import IconRain from "./icons/weather/IconRain.vue";
-import IconCloud from "./icons/weather/IconCloud.vue";
+import DayCard from "./components/DayCard.vue";
 
 const API_ENDPOINT = 'https://api.weatherapi.com/v1';
 const errorMap = new Map([[1006, 'Указанный город не найден']])
 const savedCity = ref('Moscow');
 const data = ref();
-const error = ref()
+const error = ref();
+const days = ref();
 
 const errorDisplay = computed(() => {
   return errorMap.get(error.value?.error?.code)
@@ -54,13 +53,26 @@ async function getCity(city) {
   }
   error.value = null;
   data.value = await res.json();
+  days.value = data.value.forecast.forecastday;
 }
 </script>
 
 <template>
   <main class="main">
     <Error :error="errorDisplay"/>
-    <State v-for="item in dataModified" v-bind="item" :key="item.label"/>
+    <div v-if="data" class="stat">
+      <div class="stat-list">
+        <State v-for="item in dataModified" v-bind="item" :key="item.label"/>
+      </div>
+      <div class="day-card__list">
+        <DayCard v-for="item in days"
+                 :key="item.date"
+                 :weather-code="item.day.condition.code"
+                 :temp="item.day.maxtemp_c"
+                 :date="new Date(item.date)"
+        />
+      </div>
+    </div>
     <CitySelect @selected-city="getCity"/>
   </main>
 
@@ -76,4 +88,21 @@ async function getCity(city) {
   border-radius: 20px;
 }
 
+.day-card__list {
+  display: flex;
+  gap: 1px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  margin-bottom: 70px;
+}
+
+.stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 </style>

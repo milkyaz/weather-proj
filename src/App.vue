@@ -11,6 +11,7 @@ const savedCity = ref('Moscow');
 const data = ref();
 const error = ref();
 const days = ref();
+const activeIndex = ref(0);
 
 const errorDisplay = computed(() => {
   return errorMap.get(error.value?.error?.code)
@@ -65,11 +66,13 @@ async function getCity(city) {
         <State v-for="item in dataModified" v-bind="item" :key="item.label"/>
       </div>
       <div class="day-card__list">
-        <DayCard v-for="item in days"
+        <DayCard v-for="(item, i) in days"
                  :key="item.date"
                  :weather-code="item.day.condition.code"
                  :temp="item.day.maxtemp_c"
                  :date="new Date(item.date)"
+                 :is-active="activeIndex == i"
+                 @click="() => activeIndex = i"
         />
       </div>
     </div>

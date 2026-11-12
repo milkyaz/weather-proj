@@ -2,24 +2,22 @@
 import IconSun from "../icons/weather/IconSun.vue";
 import IconCloud from "../icons/weather/IconCloud.vue";
 import IconRain from "../icons/weather/IconRain.vue";
+import {computed} from "vue";
 
-const {weatherCode, date, temp} = defineProps({
+const {weatherCode, date, temp, isActive} = defineProps({
   weatherCode: Number,
   date: Date,
   temp: String,
+  isActive: Boolean
 })
-
-const iconMap = {
-  1000: IconSun,
-  1006: IconCloud,
-  1009: IconRain,
-}
-
+const iconColor = computed(() => isActive ? '#000000' : '#FFFFFF');
 </script>
 
 <template>
-  <button class="day-card">
-    <component :is="iconMap[weatherCode]" />
+  <button class="day-card" :class="{active: isActive}">
+    <IconSun v-if="weatherCode <= 1003" :color="iconColor"/>
+    <IconCloud v-if="weatherCode >= 1006 && weatherCode < 1063" :color="iconColor"/>
+    <IconRain v-if="weatherCode >= 1063" :color="iconColor"/>
     <span class="day-card__text">{{ date.toLocaleDateString('ru-Ru', {weekday: 'short'}) }}</span>
     <span class="day-card__temp">{{ temp + "°C" }}</span>
   </button>
@@ -40,6 +38,11 @@ const iconMap = {
   color: white;
 }
 
+.active {
+  background-color: #FFFFFF;
+  color: #000000;
+}
+
 .day-card__text {
   font-size: 20px;
 }
@@ -49,7 +52,7 @@ const iconMap = {
   font-weight: bold;
 }
 
-.day-card:hover {
+.day-card:not(.active):hover {
   background-color: #3A434F;
 }
 
